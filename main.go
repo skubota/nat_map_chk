@@ -11,22 +11,22 @@ import (
 	"strings"
 )
 
-var init_port = flag.Int("i", 10000, "initial source port")
+var initPort = flag.Int("i", 10000, "initial source port")
 var count = flag.Int("c", 3, "count")
 var servers = flag.String("s", "stun.l.google.com:19302,stun1.l.google.com:19302,stun2.l.google.com:19302,stun3.l.google.com:19302,stun4.l.google.com:19302", "STUN Servers")
-var DEBUG = flag.Bool("D", false, "debug mode")
+var debug = flag.Bool("D", false, "debug mode")
 
 func main() {
 
 	flag.Parse()
 
-	service := *init_port
+	service := *initPort
 	srvs := []string{}
 	for _, str := range strings.Split(*servers, ",") {
 		srvs = append(srvs, str)
 	}
 
-	ip, err := get_my_ipaddress()
+	ip, err := getMyIpaddress()
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -48,8 +48,8 @@ func main() {
 		}
 
 		for j := 0; j < len(srvs); j++ {
-			xor := stun_check(conn, srvs[j])
-			if *DEBUG {
+			xor := stunCheck(conn, srvs[j])
+			if *debug {
 				log.Printf("Src: %s:%d, Dst: %s, Res: %s:%d\n", ip, service+i, srvs[j], xor.IP, xor.Port)
 			}
 			result[i][j] = fmt.Sprintf("%s:%d", xor.IP, xor.Port)
@@ -93,7 +93,7 @@ func main() {
 
 }
 
-func stun_check(conn *net.UDPConn, srv string) stun.XORMappedAddress {
+func stunCheck(conn *net.UDPConn, srv string) stun.XORMappedAddress {
 	var xorAddr stun.XORMappedAddress
 
 	message := stun.MustBuild(stun.TransactionID, stun.BindingRequest)
@@ -115,7 +115,7 @@ func stun_check(conn *net.UDPConn, srv string) stun.XORMappedAddress {
 	//return fmt.Sprintf("%s:%d", xorAddr.IP, xorAddr.Port)
 }
 
-func get_my_ipaddress() (string, error) {
+func getMyIpaddress() (string, error) {
 	ifaces, err := net.Interfaces()
 	if err != nil {
 		return "", err
