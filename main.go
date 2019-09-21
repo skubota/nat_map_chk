@@ -11,6 +11,12 @@ import (
 	"strings"
 )
 
+// Version of PROG
+var Version = "0.1"
+
+// Name of PROG
+var Name = "nat_map_chk"
+
 var initPort = flag.Int("i", 10000, "initial source port")
 var count = flag.Int("c", 3, "count")
 var servers = flag.String("s", "stun.l.google.com:19302,stun1.l.google.com:19302,stun2.l.google.com:19302,stun3.l.google.com:19302,stun4.l.google.com:19302", "STUN Servers")
